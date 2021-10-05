@@ -1,0 +1,6 @@
+:hover{
+    cursor: default;
+}
+:focus {
+	outline: none;
+}

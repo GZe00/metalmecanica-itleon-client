@@ -1,0 +1,3 @@
+Store: 
+
+    Reiniciar el estado de loggin => de false/true al inciar sesión & true/false al finalizar sesión
