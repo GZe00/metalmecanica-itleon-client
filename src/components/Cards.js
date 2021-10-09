@@ -16,7 +16,7 @@ const Button = styled(NavLink)`
     border-radius: 10px;
 `;
 
-const Cards = ({ title, description, to }) => {
+const Cards = ({ title, subtitle, description, to }) => {
     return (
         <Card style={{
             width: '18rem',
@@ -29,6 +29,7 @@ const Cards = ({ title, description, to }) => {
                 style={{ textAlign: 'center' }}
             >
                 <Card.Title style={{ textAlign: 'left' }} >{`${title}`}</Card.Title>
+                <Card.Subtitle style={{ marginTop: '20px', marginBottom: '20px' }}>{`${subtitle}`}</Card.Subtitle>
                 <Card.Text style={{ textAlign: 'left' }}>
                     {`${description}`}
                 </Card.Text>
