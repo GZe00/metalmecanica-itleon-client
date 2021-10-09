@@ -52,7 +52,6 @@ const HomeComponent = () => {
             <h2>Tecnologico Nacional de México: Campus León</h2>
 
             <SignUp />
-
             <TagA
                 to="/recovery">
                 <p>¿Olvidaste tu contraseña? </p>

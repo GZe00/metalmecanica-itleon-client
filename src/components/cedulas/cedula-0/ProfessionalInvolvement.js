@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState } from "react";
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FieldInput from '../../FieldInput';
+
+import { MdLiveHelp } from "@react-icons/all-files/md/MdLiveHelp";
+import Help from "../../Help";
 
 import styled from 'styled-components';
 
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  height: max-content;
+  h4 {
+      width: 95%;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+  margin-bottom: 10px;
+`;
 
 const Buttons = styled.div`
     Button{
@@ -16,7 +31,10 @@ const Buttons = styled.div`
 `;
 
 const ProfessionalInvolvement = () => {
-    
+
+    const [helpShow, setHelpShow] = useState(false);
+
+  const handleShow = () => (helpShow ? setHelpShow(false) : setHelpShow(true));
     // const validate = Yup.object({
     // names: Yup.string(),
     // lastnames: Yup.string(),
@@ -30,7 +48,12 @@ const ProfessionalInvolvement = () => {
 
     // });
 
+    const title = "10. Membresía o participación en Colegios, Cámaras, asociaciones científicas o algún otro tipo de organismo profesional";
+  const description =
+    "Ingrese la clave o identificadr del tipo de curso impartido durante el periodo escolar 2014-2015, usando la siguiente nomenclatura: Educación Continua (ECO), Otro (OTR) (especificar).";
+
     return (
+        <>
         <Formik
             initialValues={{
                 typeTrain: '',
@@ -45,7 +68,10 @@ const ProfessionalInvolvement = () => {
         >
             {formik => (
                 <>
-                    <h4>10. Membresía o participación en Colegios, Cámaras, asociaciones científicas o algún otro tipo de organismo profesional</h4>
+                    <Title>
+              <h4>{`${title}`} </h4>
+              <MdLiveHelp style={{cursor: 'pointer '}} onClick={handleShow} />
+            </Title>
                     <p>Anotar el nombre del organismo, el tipo de membresía o participación, el número de años y, en su caso, alguna otra información relevante.</p>
                     <Form>
                         <Table striped bordered hover>
@@ -70,6 +96,8 @@ const ProfessionalInvolvement = () => {
                 </>
             )}
         </Formik >
+        {helpShow ? <Help title={title} description={description} /> : null}
+        </>
     )
 }
 

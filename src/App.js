@@ -29,6 +29,7 @@ import Configuracion from "./pages/Configuracion";
 import Cedulas from "./pages/Cedulas";
 import Avisos from "./pages/Avisos";
 
+import Cedula0 from "./pages/Cedula0/Cedula0";
 
 //Librerías
 import styled from "styled-components";
@@ -41,7 +42,7 @@ const Pages = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: auto;
+    /* overflow: auto; */
     `;
 
 const PageLoggin = styled.div`
@@ -188,6 +189,9 @@ const App = () => {
                       <Route
                       path="/cedulas"
                       component={Cedulas} />
+                      <Route
+                      path="/cedula/0"
+                      component={Cedula0} />
                       <Route
                       path="/avisos"
                       component={Avisos} />

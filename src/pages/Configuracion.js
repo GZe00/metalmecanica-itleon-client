@@ -26,22 +26,27 @@ const HomeComponent = () => {
             <Container>
                 <Cards
                     title='Cedulas'
+                    subtitle=''
                     description='Información que el docente tiene que responder para la generación de reportes de acuerdo al tema solicitado.'
                     to='/cedulas'/>
                 <Cards
                     title='Grupos'
+                    subtitle=''
                     description='Información que el docasdhkajshdkjashkdasente tiene que responder para la generación de reportes de acuerdo al tema solicitado.'
                     to='/configuracion/grupos' />
                 <Cards
                     title='Calificaciones'
+                    subtitle=''
                     description='Informaciónajsgdjahkgdsjhgdasjhdgaskjhdgkasjhdgakjshgdjk que el docente tiene que responder para la generación de reportes de acuerdo al tema solicitado.' 
                     to='/configuracion/calificaciones' />
                 <Cards
                     title='Inventario'
+                    subtitle=''
                     description='Inforcuerdo al tema solicitado.' 
                     to='/configuracion/inventario'/>
                 <Cards
                     title='Otros'
+                    subtitle=''
                     description='Información que el docente tiene que responder para la generación de reportes de acuerdo al tema solicitado.' 
                     to='/configuracion/otros'/>
             </Container>
