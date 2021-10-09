@@ -93,7 +93,7 @@ const RegisterForm = () => {
       .oneOf([Yup.ref("password"), null], "Contraseñas no coinciden")
       .required("Confirma tu contraseña"),
     gender: Yup.string().required("Seleccione una opción"),
-    typeuser: Yup.string().oneOf(["student", "teach"]),
+    typeuser: Yup.string().oneOf(["estudiante", "docente"]),
   });
 
   const genders = [
@@ -193,7 +193,7 @@ const RegisterForm = () => {
                   label="Alumno"
                   type="radio"
                   name="typeuser"
-                  value="student"
+                  value="estudiante"
                   id=""
                   placeholder="Alumno"
                   required
@@ -202,7 +202,7 @@ const RegisterForm = () => {
                   label="Docente"
                   type="radio"
                   name="typeuser"
-                  value="teach"
+                  value="docente"
                   id=""
                   placeholder="Docente"
                   required
