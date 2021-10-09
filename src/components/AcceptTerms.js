@@ -16,26 +16,27 @@ const About =  styled(NavLink)`
 
 const AcceptTerms = props => {
 
-    console.log(props)
+    // console.log(props)
 
     const validate = Yup.object({
         hasReadThePurpose: Yup.bool()
     });
 
-    const acceptTerm = () => {
+    const confirm = () => {
+       
         props.dispatch({
-            type: true
+            type: 'CONFIRM'
         })
     }
 
     return (
         <Formik
             initialValues={{
-                hasReadThePurpose: false
+                hasReadThePurpose: ''
             }}
             validationSchema={validate}
             onSubmit={() => {
-                acceptTerm()
+                confirm()
             }}
         >
             {formik => (

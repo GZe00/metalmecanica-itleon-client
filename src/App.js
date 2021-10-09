@@ -1,8 +1,7 @@
 //React
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Route, Redirect, Switch, useLocation } from "react-router";
-import { Provider } from 'react-redux';
-import store from './store';
+import { Provider } from "react-redux";
 
 //Loggin, Recovery & Register
 import Main from "./pages/Main";
@@ -13,7 +12,7 @@ import Register from "./pages/Register";
 import InitialSettings from "./pages/InitialSettings";
 
 //Lectura
-import AcercaDe from './pages/AcercaDe';
+import AcercaDe from "./pages/AcercaDe";
 
 //Contenido
 import Sidebar from "./components/Sidebar";
@@ -38,22 +37,25 @@ import userChangeFirstTimeService from "./services/userChangeFirstTimeService";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
 
+//Datos del usuario
+import store from "./store";
+
 
 const Pages = styled.div`
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* overflow: auto; */
-    `;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* overflow: auto; */
+`;
 
 const PageLoggin = styled.div`
-    width: 100%;
-    height: 100vh;
-    background-color: #F2F2F2;
-    overflow: auto;
-  `;
+  width: 100%;
+  height: 100vh;
+  background-color: #f2f2f2;
+  overflow: auto;
+`;
 
 const App = () => {
   const location = useLocation();
@@ -62,55 +64,44 @@ const App = () => {
   const [loggin, setLoggin] = useState(false);
 
   store.subscribe(() => {
-    // console.log(store.getState().loggin.data.id);
-    // console.log(store.getState().loggin.data.first_time);
-    // console.log(store.getState().loggin.data.id);
     let dataUser = {
       id: store.getState().loggin.data.id,
       firstTime: store.getState().loggin.data.first_time,
-      email: store.getState().loggin.data.email
+      email: store.getState().loggin.data.email,
     };
-    
-    // true => docente 
+    // true => docente
     // false => estudiante
 
     // Aquí mismo se lleva a cabo la comprobación del primer inicio de sesión EN DOCENTES
     // console.log(dataUser)
     if (store.getState().loggin.type) {
-      if(!dataUser.firstTime){
+      if (!dataUser.firstTime) {
         //Pasar a true
         userChangeFirstTimeService(dataUser.id);
         setfirstTimeTeach(true);
-        setLoggin('DOCENTE');
-      }else{
+        setLoggin("DOCENTE");
+      } else {
         setfirstTimeTeach(false);
-        setLoggin('DOCENTE');
+        setLoggin("DOCENTE");
       }
-      //Funcion de consulta a la DB para verificar si es la primera vez que inicia sesión 
-      // setfirstTimeTeach('docente')
-    } else{
-      setLoggin('ESTUDIANTE');
-      setfirstTimeTeach('');
+    } else {
+      setLoggin("ESTUDIANTE");
+      setfirstTimeTeach("");
     }
+
+    if(store.getState().initialSetting){
+      setfirstTimeTeach(false)
+    }
+    console.log(dataUser)
   });
 
   const handleLogOut = () => setLoggin(false);
 
-
   //Tipo de docente
-  const [firstTimeTeach, setfirstTimeTeach] = useState(undefined)
-
-
-  // useEffect(() => {
-  //   if (loggin) {
-  //     console.log(loggin);
-  //     setLoggin(true);
-  //   }
-  // }, [loggin]);
+  const [firstTimeTeach, setfirstTimeTeach] = useState(undefined);
 
 
   if (loggin) {
-
     //Funcion donde firstTimeTeachService() revisa en la DB que tipo de docente es y retorna un valor para firstTimeTeach
     // 1. Jefe de departamento      ||  jefe-de-departamento
     // 2. Jefatura de docencia      ||  jefatura-docencia
@@ -119,66 +110,76 @@ const App = () => {
     // 5. Jefatura de laboratorio   ||  jefatura-laboratorio
     // 6. Docente                   ||  docente
 
-    // Si firstTimeTeach == '' significa que es la primera vez que se inicia sesión y hay que asignarle su jerarquía
     // Existirán páginas exclusivas para docentes con jerarquía alta
-    if (firstTimeTeach) {
+
+    if (loggin == "ESTUDIANTE") {
+      // Seccion de estudiantes
+
       return (
         <div>
-          <Redirect to='/initial-settings' />
-          <PageLoggin>
-            <Provider store={store}>
+          <Redirect to="/home" />
+          <Provider store={store}>
+            <Sidebar _logOut={handleLogOut} type={loggin} />
+            <Pages>
               <AnimatePresence exitBeforeEnter>
                 <Switch location={location} key={location.pathname}>
-                  <Route
-                    path='/initial-settings'
-                    component={InitialSettings} />
-
-                  <Route
+                  <Route exact path="/home" component={Home} />
+                  <Route path="/menu" component={Menu} />
+                  <Route path="/perfil" component={Perfil} />
+                  <Route path="/mensajes" component={Mensajes} />
+                  <Route path="/analisis" component={Analisis} />
+                  <Route path="/adminsitracion" component={Administracion} />
+                  <Route path="/guardado" component={Guardado} />
+                  {/* <Route
                     path="/project-Metamecanica"
-                    component={AcercaDe} />
+                    component={AboutPaper} /> */}
                 </Switch>
               </AnimatePresence>
-            </Provider>
-          </PageLoggin>
+            </Pages>
+          </Provider>
         </div>
       );
-    } else {
-      // console.log(store.getState().loggin)
-      
-      if(loggin == 'ESTUDIANTE'){
-
-        // Seccion de estudiantes
-
-        return (
-
-          <div>
-            <Redirect to='/home' />
+    } else if (loggin === "DOCENTE") {
+      // Seccion de docentes
+      {
+        if (firstTimeTeach === undefined) {
+          return null;
+        } else if (firstTimeTeach) {
+          return <>
+            <Redirect to="/initial-settings" />
+            <PageLoggin>
+              <Provider store={store}>
+                <AnimatePresence exitBeforeEnter>
+                  <Switch location={location} key={location.pathname}>
+                    <Route
+                      path="/initial-settings"
+                      component={InitialSettings}
+                    />
+                    <Route path="/project-Metamecanica" component={AcercaDe} />
+                  </Switch>
+                </AnimatePresence>
+              </Provider>
+            </PageLoggin>
+          </>;
+        } else {
+          return <>
+            <Redirect to="/home" />
             <Provider store={store}>
-              <Sidebar _logOut={handleLogOut} type={loggin}/>
+              <Sidebar _logOut={handleLogOut} type={loggin} />
               <Pages>
                 <AnimatePresence exitBeforeEnter>
                   <Switch location={location} key={location.pathname}>
-                    <Route exact
-                      path="/home"
-                      component={Home} />
-                    <Route
-                      path="/menu"
-                      component={Menu} />
-                    <Route
-                      path="/perfil"
-                      component={Perfil} />
-                    <Route
-                      path="/mensajes"
-                      component={Mensajes} />
-                    <Route
-                      path="/analisis"
-                      component={Analisis} />
-                    <Route
-                      path="/adminsitracion"
-                      component={Administracion} />
-                    <Route
-                      path="/guardado"
-                      component={Guardado} />
+                    <Route exact path="/home" component={Home} />
+                    <Route path="/menu" component={Menu} />
+                    <Route path="/perfil" component={Perfil} />
+                    <Route path="/configuracion" component={Configuracion} />
+                    <Route path="/cedulas" component={Cedulas} />
+                    <Route path="/cedula/0" component={Cedula0} />
+                    <Route path="/avisos" component={Avisos} />
+                    <Route path="/mensajes" component={Mensajes} />
+                    <Route path="/analisis" component={Analisis} />
+                    <Route path="/adminsitracion" component={Administracion} />
+                    <Route path="/guardado" component={Guardado} />
                     {/* <Route
                     path="/project-Metamecanica"
                     component={AboutPaper} /> */}
@@ -186,95 +187,27 @@ const App = () => {
                 </AnimatePresence>
               </Pages>
             </Provider>
-          </div>
-        );
-      }else if (loggin === 'DOCENTE'){
-
-        // Seccion de docentes
-
-        return (
-          <div>
-            <Redirect to='/home' />
-            <Provider store={store}>
-              <Sidebar _logOut={handleLogOut} type={loggin}/>
-              <Pages>
-                <AnimatePresence exitBeforeEnter>
-                  <Switch location={location} key={location.pathname}>
-                    <Route exact
-                      path="/home"
-                      component={Home} />
-                    <Route
-                      path="/menu"
-                      component={Menu} />
-                    <Route
-                      path="/perfil"
-                      component={Perfil} />
-                      <Route
-                      path="/configuracion"
-                      component={Configuracion} />
-                      <Route
-                      path="/cedulas"
-                      component={Cedulas} />
-                      <Route
-                      path="/cedula/0"
-                      component={Cedula0} />
-                      <Route
-                      path="/avisos"
-                      component={Avisos} />
-                    <Route
-                      path="/mensajes"
-                      component={Mensajes} />
-                    <Route
-                      path="/analisis"
-                      component={Analisis} />
-                    <Route
-                      path="/adminsitracion"
-                      component={Administracion} />
-                    <Route
-                      path="/guardado"
-                      component={Guardado} />
-                    {/* <Route
-                    path="/project-Metamecanica"
-                    component={AboutPaper} /> */}
-                  </Switch>
-                </AnimatePresence>
-              </Pages>
-            </Provider>
-          </div>
-        );
+          </>;
+        }
       }
-      
     }
-
   } else {
-
     // Menu de inicio
 
     return (
       <div>
-        <Redirect to='/' />
+        <Redirect to="/" />
         <Provider store={store}>
           <PageLoggin>
             <AnimatePresence exitBeforeEnter>
               <Switch location={location} key={location.pathname}>
-                <Route
-                  exact
-                  path="/"
-                  component={Main}
-                />
-                <Route
-                  path="/register"
-                  component={Register}
-                />
-                <Route
-                  path="/recovery"
-                  component={Recovery}
-                />
+                <Route exact path="/" component={Main} />
+                <Route path="/register" component={Register} />
+                <Route path="/recovery" component={Recovery} />
               </Switch>
             </AnimatePresence>
           </PageLoggin>
         </Provider>
-
       </div>
     );
   }

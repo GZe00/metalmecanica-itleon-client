@@ -81,12 +81,6 @@ const SignUp = (props) => {
         props.dispatch({
             type: data,
         });
-    // }
-    // else{
-    //     props.dispatch({
-    //         type: 'DOCENTE',
-    //     });
-    // }
   };
 
   return (

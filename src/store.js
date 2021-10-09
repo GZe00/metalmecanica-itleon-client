@@ -1,8 +1,5 @@
 import { createStore, combineReducers } from 'redux';
 
-const AUTHENTICATION = false;
-
-
 //Es recomendable retornar por default el state
 
 const loggin = (state = '', action) => {
@@ -21,32 +18,25 @@ const loggin = (state = '', action) => {
             }
             return userTeach;
         default:
-            return ''
+            return state
     }
 }
 
-// const initialSetting = (state = false, action) => {
-//     switch(action.type){
-//         case true:
-//             return true
-//         default:
-//             return false
-//     }
-// }
-
-// const initialSetting = (state = {}, action) => {
-//     switch(action.type){
-//         case true:
-//             return true
-//         default:
-//             return false
-//     }
-// }
+const initialSetting = (state = '', action) => {
+    // console.log(action.type)
+    switch(action.type){
+        case 'CONFIRM':
+            return true
+        default:
+            return state
+    }
+}
 
 
 const store = createStore(combineReducers({
     loggin,
-    // initialSetting
+    initialSetting
 }))
 
-export default store
+
+export default store;
