@@ -31,6 +31,9 @@ import Avisos from "./pages/Avisos";
 
 import Cedula0 from "./pages/Cedula0/Cedula0";
 
+//Servicios
+import userChangeFirstTimeService from "./services/userChangeFirstTimeService";
+
 //Librerías
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
@@ -59,18 +62,35 @@ const App = () => {
   const [loggin, setLoggin] = useState(false);
 
   store.subscribe(() => {
+    // console.log(store.getState().loggin.data.id);
+    // console.log(store.getState().loggin.data.first_time);
+    // console.log(store.getState().loggin.data.id);
+    let dataUser = {
+      id: store.getState().loggin.data.id,
+      firstTime: store.getState().loggin.data.first_time,
+      email: store.getState().loggin.data.email
+    };
     
-    if (store.getState().loggin.student) {
-      setLoggin(true)
-      setEducationalType('')
-    } else if (store.getState().loggin.teach) {
-      setLoggin(true)
+    // true => docente 
+    // false => estudiante
+
+    // Aquí mismo se lleva a cabo la comprobación del primer inicio de sesión EN DOCENTES
+    // console.log(dataUser)
+    if (store.getState().loggin.type) {
+      if(!dataUser.firstTime){
+        //Pasar a true
+        userChangeFirstTimeService(dataUser.id);
+        setfirstTimeTeach(true);
+        setLoggin('DOCENTE');
+      }else{
+        setfirstTimeTeach(false);
+        setLoggin('DOCENTE');
+      }
       //Funcion de consulta a la DB para verificar si es la primera vez que inicia sesión 
-      setEducationalType('docente');
-    }
-    if (store.getState().initialSetting) {
-    
-      setEducationalType('');
+      // setfirstTimeTeach('docente')
+    } else{
+      setLoggin('ESTUDIANTE');
+      setfirstTimeTeach('');
     }
   });
 
@@ -78,7 +98,7 @@ const App = () => {
 
 
   //Tipo de docente
-  const [educationalType, setEducationalType] = useState('docente')
+  const [firstTimeTeach, setfirstTimeTeach] = useState(undefined)
 
 
   // useEffect(() => {
@@ -91,7 +111,7 @@ const App = () => {
 
   if (loggin) {
 
-    //Funcion donde educationalTypeService() revisa en la DB que tipo de docente es y retorna un valor para educationalType
+    //Funcion donde firstTimeTeachService() revisa en la DB que tipo de docente es y retorna un valor para firstTimeTeach
     // 1. Jefe de departamento      ||  jefe-de-departamento
     // 2. Jefatura de docencia      ||  jefatura-docencia
     // 3. Jefatura de vinculacion   ||  jefatura-vinculacion
@@ -99,9 +119,9 @@ const App = () => {
     // 5. Jefatura de laboratorio   ||  jefatura-laboratorio
     // 6. Docente                   ||  docente
 
-    // Si educationalType == '' significa que es la primera vez que se inicia sesión y hay que asignarle su jerarquía
+    // Si firstTimeTeach == '' significa que es la primera vez que se inicia sesión y hay que asignarle su jerarquía
     // Existirán páginas exclusivas para docentes con jerarquía alta
-    if (educationalType === 'docente') {
+    if (firstTimeTeach) {
       return (
         <div>
           <Redirect to='/initial-settings' />
@@ -125,13 +145,16 @@ const App = () => {
     } else {
       // console.log(store.getState().loggin)
       
-      if(store.getState().loggin.student){
+      if(loggin == 'ESTUDIANTE'){
+
+        // Seccion de estudiantes
+
         return (
 
           <div>
             <Redirect to='/home' />
             <Provider store={store}>
-              <Sidebar _logOut={handleLogOut} />
+              <Sidebar _logOut={handleLogOut} type={loggin}/>
               <Pages>
                 <AnimatePresence exitBeforeEnter>
                   <Switch location={location} key={location.pathname}>
@@ -165,12 +188,15 @@ const App = () => {
             </Provider>
           </div>
         );
-      }else{
+      }else if (loggin === 'DOCENTE'){
+
+        // Seccion de docentes
+
         return (
           <div>
             <Redirect to='/home' />
             <Provider store={store}>
-              <Sidebar _logOut={handleLogOut} />
+              <Sidebar _logOut={handleLogOut} type={loggin}/>
               <Pages>
                 <AnimatePresence exitBeforeEnter>
                   <Switch location={location} key={location.pathname}>
@@ -221,6 +247,9 @@ const App = () => {
     }
 
   } else {
+
+    // Menu de inicio
+
     return (
       <div>
         <Redirect to='/' />

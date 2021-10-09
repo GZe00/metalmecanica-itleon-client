@@ -5,24 +5,34 @@ const AUTHENTICATION = false;
 
 //Es recomendable retornar por default el state
 
-const loggin = (state = AUTHENTICATION, action) => {
-    // console.log(action)
-    switch (action.type.student || action.type.teach) {
-        case true:
-            return action.type
+const loggin = (state = '', action) => {
+    
+    switch (action.type.userRol) {
+        case 'estudiante':
+            const userStudent = {
+                data: action.type.response,
+                type: false
+            }
+            return userStudent;
+        case 'docente':
+            const userTeach = {
+                data: action.type.response,
+                type: true
+            }
+            return userTeach;
         default:
-            return false
+            return ''
     }
 }
 
-const initialSetting = (state = false, action) => {
-    switch(action.type){
-        case true:
-            return true
-        default:
-            return false
-    }
-}
+// const initialSetting = (state = false, action) => {
+//     switch(action.type){
+//         case true:
+//             return true
+//         default:
+//             return false
+//     }
+// }
 
 // const initialSetting = (state = {}, action) => {
 //     switch(action.type){
@@ -36,7 +46,7 @@ const initialSetting = (state = false, action) => {
 
 const store = createStore(combineReducers({
     loggin,
-    initialSetting
+    // initialSetting
 }))
 
 export default store

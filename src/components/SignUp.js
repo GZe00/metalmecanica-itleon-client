@@ -67,7 +67,7 @@ const NoAuth = styled.div`
 `;
 
 const SignUp = (props) => {
-  const [authUser, setAuthUser] = useState();
+//   const [authUser, setAuthUser] = useState();
   const [login, setLogin] = useState(undefined);
 
   const validate = Yup.object({
@@ -76,9 +76,17 @@ const SignUp = (props) => {
   });
 
   const authentication = ({ ...data }) => {
-    props.dispatch({
-      type: data,
-    });
+    // console.log(data)
+    // if(data.userRol == 'estudiante'){
+        props.dispatch({
+            type: data,
+        });
+    // }
+    // else{
+    //     props.dispatch({
+    //         type: 'DOCENTE',
+    //     });
+    // }
   };
 
   return (
@@ -91,18 +99,18 @@ const SignUp = (props) => {
         validationSchema={validate}
         onSubmit={async (values) => {
           const data = await loginService(values);
+
           //Podriamos cambiar esta validación por un spinner
           //esta validacion se hace desde el servicio de login
 
-          console.log(data);
+        //   console.log(data);
 
           if (data) {
             setLogin(true);
-            setAuthUser(data);
-            console.log(login);
+            // setAuthUser(data);
+            authentication(data);
           } else {
             setLogin(false);
-            console.log(login);
           }
         }}
       >

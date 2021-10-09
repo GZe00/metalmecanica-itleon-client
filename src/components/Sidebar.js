@@ -272,16 +272,13 @@ const Logout = styled.div`
 const Sidebar = (props) => {
 
 
-    // console.log(store.getState().loggin)
-
-
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
 
     const [profileClick, setprofileClick] = useState(false);
     const handleProfileClick = () => setprofileClick(!profileClick);
 
-    if (props.state.student) {
+    if (props.type == 'ESTUDIANTE') {
         return <Container>
             <Button clicked={click} onClick={() => handleClick()}>
                 Click
@@ -372,7 +369,7 @@ const Sidebar = (props) => {
                 </Profile>
             </SidebarContainer>
         </Container>
-    } else {
+    } else if(props.type == 'DOCENTE') {
         return <Container>
             <Button clicked={click} onClick={() => handleClick()}>
                 Click
